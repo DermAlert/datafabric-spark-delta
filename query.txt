@@ -1,0 +1,82 @@
+# BASIC COMMANDS
+
+1. List all available collections:
+   python pyspark_query.py --list-collections
+
+2. List columns in a specific collection:
+   python pyspark_query.py --collection <ID> --list-columns
+   (Example: python pyspark_query.py --collection 60 --list-columns)
+
+3. Show sample data from a collection:
+   python pyspark_query.py --collection <ID> --limit <N>
+   (Example: python pyspark_query.py --collection 60 --limit 5)
+
+4. Show values from a specific column:
+   python pyspark_query.py --collection <ID> --column <COLUMN_NAME> --limit <N>
+   (Example: python pyspark_query.py --collection 60 --column "clinical_diagnosis_1" --limit 10)
+
+5. Filter by column value:
+   python pyspark_query.py --collection <ID> --column <COLUMN_NAME> --value <VALUE> --limit <N>
+   (Example: python pyspark_query.py --collection 60 --column "clinical_diagnosis_1" --value "melanoma" --limit 5)
+
+6. Show distinct values in a column:
+   python pyspark_query.py --collection <ID> --column <COLUMN_NAME> --distinct
+   (Example: python pyspark_query.py --collection 60 --column "clinical_sex" --distinct)
+
+
+# PARALLEL QUERYING COMMANDS
+
+7. Query all collections in parallel (ThreadPool):
+   python pyspark_query.py --all-collections --limit <N>
+   (Example: python pyspark_query.py --all-collections --limit 3)
+
+8. Query all collections with column filter:
+   python pyspark_query.py --all-collections --column <COLUMN_NAME> --limit <N>
+   (Example: python pyspark_query.py --all-collections --column "clinical_diagnosis_1" --limit 2)
+
+9. Query all collections with value filter:
+   python pyspark_query.py --all-collections --column <COLUMN_NAME> --value <VALUE> --limit <N>
+   (Example: python pyspark_query.py --all-collections --column "clinical_diagnosis_1" --value "melanoma" --limit 1)
+
+10. Use Spark's native parallelism for all collections:
+    python pyspark_query.py --all-collections --native-parallel --limit <N>
+    (Example: python pyspark_query.py --all-collections --native-parallel --limit 5)
+
+
+# SQL QUERIES
+
+11. Run SQL query across all collections:
+    python pyspark_query.py --sql "<SQL_QUERY>" --limit <N>
+    (Example: python pyspark_query.py --sql "SELECT clinical_diagnosis_1, COUNT(*) as count FROM isic_data GROUP BY clinical_diagnosis_1 ORDER BY count DESC")
+
+12. Run SQL query with collection filter:
+    python pyspark_query.py --sql "SELECT * FROM isic_data WHERE collection_id = '60' LIMIT 10"
+
+
+# DATA EXPORT
+
+13. Export query results to CSV:
+    python pyspark_query.py --collection <ID> --output-csv <PATH>
+    (Example: python pyspark_query.py --collection 60 --output-csv "s3a://your-bucket/output/collection_60.csv")
+
+14. Export SQL query results to CSV:
+    python pyspark_query.py --sql "<SQL_QUERY>" --output-csv <PATH>
+    (Example: python pyspark_query.py --sql "SELECT * FROM isic_data WHERE collection_id = '60'" --output-csv "results.csv")
+
+
+# SYSTEM COMMANDS
+
+15. Test MinIO connection:
+    python pyspark_query.py --test-connection
+
+
+# PERFORMANCE TIPS
+
+- For large datasets, increase memory:
+  export PYSPARK_SUBMIT_ARGS="--executor-memory 4G --driver-memory 4G pyspark-shell"
+
+- For better parallelism, adjust shuffle partitions:
+  Add to init_spark(): .config("spark.sql.shuffle.partitions", "200")
+
+- To see query execution plans, add before show():
+  df.explain(True)

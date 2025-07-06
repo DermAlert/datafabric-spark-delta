@@ -1,0 +1,17 @@
+services:
+  pyspark-minio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pyspark-minio
+    network_mode: "host"
+    environment:
+      MINIO_ENDPOINT: "localhost:9000"
+      MINIO_ACCESS_KEY: "minio"
+      MINIO_SECRET_KEY: "minio123"
+      BUCKET_NAME: "isic-parquet-p"
+      DELTA_PATH_PREFIX: "delta"
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./:/app

@@ -1,0 +1,11 @@
+docker compose up -d
+
+Exec into it: docker exec -it pyspark-minio bash
+
+Run your script manually: python pyspark_query.py --list-collections or other commands
+
+
+
+python pyspark_query.py --list-collections
+
+--list-columns --collection 60

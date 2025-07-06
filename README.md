@@ -1,1 +1,0 @@
-# datafabric-spark-delta
